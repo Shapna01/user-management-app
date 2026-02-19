@@ -4,8 +4,7 @@ import { useRouter } from "next/navigation";
 
 export default function AuthPage() {
   const router = useRouter();
-  const [action, setAction] = useState("login");
-  const [name, setName] = useState("");
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [role, setRole] = useState("user");
@@ -14,101 +13,83 @@ export default function AuthPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const url = `/api/users/${action}`;
-    const res = await fetch(url, {
+    const res = await fetch("/api/users/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name, email, password, role }),
+      body: JSON.stringify({ email, password, role }),
     });
 
     const data = await res.json();
 
     if (res.ok) {
-      if (action === "login") {
-        sessionStorage.setItem("user", JSON.stringify(data.user));
-        router.push("/dashboard");
-      } else {
-        setMessage("Registration successful! Please login.");
-        setAction("login");
-      }
+      sessionStorage.setItem("user", JSON.stringify(data.user));
+      router.push("/dashboard");
     } else {
       setMessage(data.error);
     }
   };
 
   return (
-  <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-300 via-purple-300 to-pink-300">
-    <div className="bg-white p-8 rounded-xl shadow-2xl w-[400px] border border-gray-200">
-      <h2 className="text-3xl font-bold mb-6 text-center text-fuchsia-900">User Management </h2>
-      <h1 className="text-3xl font-bold mb-6 text-center text-fuchsia-700">
-        {action === "login" ? "Login" : "Create Account"}
-      </h1>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-300 via-purple-300 to-pink-300">
+      <div className="bg-white p-8 rounded-xl shadow-2xl w-[400px] border border-gray-200">
+        <h2 className="text-3xl font-bold mb-6 text-center text-fuchsia-900">
+          User Management
+        </h2>
 
-      <form onSubmit={handleSubmit} className="flex flex-col gap-3">
+        <h1 className="text-3xl font-bold mb-6 text-center text-fuchsia-700">
+          Login
+        </h1>
 
-        {action === "register" && (
+        <form onSubmit={handleSubmit} className="flex flex-col gap-3">
           <input
-            type="text"
-            placeholder="Name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             required
             className="border border-gray-300 p-2 rounded focus:ring-2 focus:ring-purple-400 outline-none"
           />
+
+          <input
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+            className="border border-gray-300 p-2 rounded focus:ring-2 focus:ring-purple-400 outline-none"
+          />
+
+          <select
+            value={role}
+            onChange={(e) => setRole(e.target.value)}
+            className="border border-gray-300 p-2 rounded focus:ring-2 focus:ring-purple-400 outline-none"
+          >
+            <option value="admin">Admin</option>
+            <option value="user">User</option>
+            <option value="viewer">Viewer</option>
+          </select>
+
+          <button
+            type="submit"
+            className="bg-gradient-to-r from-purple-500 to-blue-500 text-white p-2 rounded mt-2"
+          >
+            Login
+          </button>
+        </form>
+
+        {message && (
+          <p className="mt-3 text-center text-red-600 bg-red-100 p-2 rounded">
+            {message}
+          </p>
         )}
 
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-          className="border border-gray-300 p-2 rounded focus:ring-2 focus:ring-purple-400 outline-none"
-        />
-
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-          className="border border-gray-300 p-2 rounded focus:ring-2 focus:ring-purple-400 outline-none"
-        />
-
-        <select
-          value={role}
-          onChange={(e) => setRole(e.target.value)}
-          className="border border-gray-300 p-2 rounded focus:ring-2 focus:ring-purple-400 outline-none"
+        <p
+          className="mt-4 text-center text-blue-600 cursor-pointer hover:underline"
+          onClick={() => router.push("/dashboard?register=true")}
         >
-          <option value="admin">Admin</option>
-          <option value="user">User</option>
-          <option value="viewer">Viewer</option>
-        </select>
-
-        <button
-          type="submit"
-          className="bg-gradient-to-r from-purple-500 to-blue-500 text-white p-2 rounded mt-2 hover:opacity-90 transition"
-        >
-          {action === "login" ? "Login" : "Register"}
-        </button>
-      </form>
-
-      {message && (
-        <p className="mt-3 text-center text-red-600 bg-red-100 p-2 rounded">
-          {message}
+          Register User (Admin Only)
         </p>
-      )}
-
-      <p
-        className="mt-4 text-center text-blue-600 cursor-pointer hover:underline"
-        onClick={() => setAction(action === "login" ? "register" : "login")}
-      >
-        {action === "login"
-          ? "Don't have an account? Register"
-          : "Already have an account? Login"}
-      </p>
+      </div>
     </div>
-  </div>
-);
+  );
 }
-
