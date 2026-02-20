@@ -97,7 +97,6 @@ export default function Dashboard() {
   return (
     <div className="min-h-screen p-8 bg-gradient-to-br from-blue-300 via-purple-300 to-pink-300">
 
-      {/* HEADER */}
       <div className="flex justify-between items-center bg-white shadow-md px-8 py-4 rounded-xl mb-8">
         <h1 className="text-2xl font-bold text-blue-700">User Management</h1>
 
@@ -171,7 +170,6 @@ export default function Dashboard() {
         </div>
       )}
 
-      {/* PRODUCTS */}
       {!showUsers && (
         <>
           <h2 className="text-2xl font-bold mb-4 text-gray-800">Products</h2>
