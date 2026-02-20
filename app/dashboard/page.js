@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 
 export default function Dashboard() {
   const router = useRouter();
-
   const [user, setUser] = useState(null);
   const [users, setUsers] = useState([]);
   const [editUser, setEditUser] = useState(null);
@@ -19,7 +18,6 @@ export default function Dashboard() {
     password: "",
     role: "user",
   });
-
   useEffect(() => {
     const sessionUser = JSON.parse(sessionStorage.getItem("user"));
 
