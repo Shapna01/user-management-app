@@ -97,7 +97,6 @@ export default function Dashboard() {
 
       <div className="flex justify-between items-center bg-white shadow-md px-8 py-4 rounded-xl mb-8">
         <h1 className="text-2xl font-bold text-blue-700">User Management</h1>
-
         <div className="flex items-center gap-6 font-medium text-gray-700">
 
           {user.role === "admin" && (
@@ -171,7 +170,6 @@ export default function Dashboard() {
       {!showUsers && (
         <>
           <h2 className="text-2xl font-bold mb-4 text-gray-800">Products</h2>
-
           <div className="grid grid-cols-4 gap-6">
             {products.map((p) => (
               <div key={p.id} className="bg-white p-4 rounded-xl shadow">
