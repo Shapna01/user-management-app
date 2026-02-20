@@ -12,7 +12,6 @@ export default function Dashboard() {
   const [products, setProducts] = useState([]);
   const [showUsers, setShowUsers] = useState(false);
 
-  // ✅ Register popup state
   const [showRegister, setShowRegister] = useState(false);
   const [newUser, setNewUser] = useState({
     name: "",
@@ -21,7 +20,6 @@ export default function Dashboard() {
     role: "user",
   });
 
-  // ✅ Check login session
   useEffect(() => {
     const sessionUser = JSON.parse(sessionStorage.getItem("user"));
 
@@ -32,7 +30,6 @@ export default function Dashboard() {
     }
   }, [router]);
 
-  // ✅ Fetch products
   useEffect(() => {
     if (!user) return;
 
@@ -50,7 +47,6 @@ export default function Dashboard() {
       });
   }, [user]);
 
-  // ✅ Fetch users (admin only)
   useEffect(() => {
     if (!showUsers) return;
 
@@ -59,7 +55,6 @@ export default function Dashboard() {
       .then((data) => setUsers(data.users));
   }, [showUsers]);
 
-  // ✅ Register new user → then go to login page
   const handleRegister = async () => {
     if (!newUser.name || !newUser.email || !newUser.password) {
       alert("All fields required");
