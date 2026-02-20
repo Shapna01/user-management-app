@@ -7,7 +7,6 @@ export default function AuthPage() {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState("user");
   const [message, setMessage] = useState("");
 
   const handleSubmit = async (e) => {
@@ -16,7 +15,7 @@ export default function AuthPage() {
     const res = await fetch("/api/users/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password, role }),
+      body: JSON.stringify({ email, password }), 
     });
 
     const data = await res.json();
@@ -59,16 +58,6 @@ export default function AuthPage() {
             className="border border-gray-300 p-2 rounded focus:ring-2 focus:ring-purple-400 outline-none"
           />
 
-          <select
-            value={role}
-            onChange={(e) => setRole(e.target.value)}
-            className="border border-gray-300 p-2 rounded focus:ring-2 focus:ring-purple-400 outline-none"
-          >
-            <option value="admin">Admin</option>
-            <option value="user">User</option>
-            <option value="viewer">Viewer</option>
-          </select>
-
           <button
             type="submit"
             className="bg-gradient-to-r from-purple-500 to-blue-500 text-white p-2 rounded mt-2"
@@ -82,13 +71,6 @@ export default function AuthPage() {
             {message}
           </p>
         )}
-
-        <p
-          className="mt-4 text-center text-blue-600 cursor-pointer hover:underline"
-          onClick={() => router.push("/dashboard?register=true")}
-        >
-          Register User (Admin Only)
-        </p>
       </div>
     </div>
   );

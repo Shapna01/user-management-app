@@ -50,54 +50,54 @@ export default function Dashboard() {
   useEffect(() => {
     if (!showUsers) return;
 
-    fetch("https://dummyjson.com/users")
+    fetch("/api/users")
       .then((res) => res.json())
-      .then((data) => setUsers(data.users));
+      .then((data) => setUsers(data))
+      .catch((err) => console.error("Error fetching users:", err));
   }, [showUsers]);
 
   const handleRegister = async () => {
-    if (!newUser.name || !newUser.email || !newUser.password) {
-      alert("All fields required");
-      return;
-    }
+  if (!newUser.name || !newUser.email || !newUser.password) {
+    alert("All fields required");
+    return;
+  }
 
-    try {
-      const res = await fetch("/api/users/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(newUser),
+  try {
+    const res = await fetch("/api/users/register", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(newUser),
+    });
+
+    const data = await res.json();
+
+    if (res.ok) {
+      alert("Registration successful!");
+
+      setNewUser({
+        name: "",
+        email: "",
+        password: "",
+        role: "user",
       });
 
-      const data = await res.json();
+      setShowRegister(false);
 
-      if (res.ok) {
-        alert("Registration successful! Please login.");
-
-        setNewUser({
-          name: "",
-          email: "",
-          password: "",
-          role: "user",
-        });
-
-        setShowRegister(false);
-
-        sessionStorage.removeItem("user");
-
-        router.push("/");
-      } else {
-        alert(data.error || "Registration failed");
-      }
-    } catch (error) {
-      alert("Something went wrong");
+      router.push("/");
+    } else {
+      alert(data.error || "Registration failed");
     }
-  };
+  } catch (error) {
+    alert("Something went wrong");
+  }
+};
 
   if (!user) return null;
 
   return (
     <div className="min-h-screen p-8 bg-gradient-to-br from-blue-300 via-purple-300 to-pink-300">
 
+      {/* HEADER */}
       <div className="flex justify-between items-center bg-white shadow-md px-8 py-4 rounded-xl mb-8">
         <h1 className="text-2xl font-bold text-blue-700">User Management</h1>
 
@@ -144,7 +144,7 @@ export default function Dashboard() {
                 <th className="p-2 border">Id</th>
                 <th className="p-2 border">Name</th>
                 <th className="p-2 border">Email</th>
-                <th className="p-2 border">Phone</th>
+                <th className="p-2 border">Role</th>
                 <th className="p-2 border">Edit</th>
               </tr>
             </thead>
@@ -153,9 +153,9 @@ export default function Dashboard() {
               {users.map((u) => (
                 <tr key={u.id}>
                   <td className="p-2 border">{u.id}</td>
-                  <td className="p-2 border">{u.firstName}</td>
+                  <td className="p-2 border">{u.name}</td>
                   <td className="p-2 border">{u.email}</td>
-                  <td className="p-2 border">{u.phone}</td>
+                  <td className="p-2 border">{u.role}</td>
                   <td className="p-2 border">
                     <button
                       onClick={() => setEditUser(u)}
@@ -171,6 +171,7 @@ export default function Dashboard() {
         </div>
       )}
 
+      {/* PRODUCTS */}
       {!showUsers && (
         <>
           <h2 className="text-2xl font-bold mb-4 text-gray-800">Products</h2>
@@ -198,9 +199,9 @@ export default function Dashboard() {
             <h2 className="text-lg font-bold mb-3">Edit User</h2>
 
             <input
-              value={editUser.firstName || ""}
+              value={editUser.name || ""}
               onChange={(e) =>
-                setEditUser({ ...editUser, firstName: e.target.value })
+                setEditUser({ ...editUser, name: e.target.value })
               }
               className="border p-2 w-full mb-3 rounded"
               placeholder="Name"
@@ -246,7 +247,9 @@ export default function Dashboard() {
       {showRegister && (
         <div className="fixed inset-0 flex items-center justify-center bg-black/40">
           <div className="bg-white p-6 rounded-xl shadow-xl w-[350px]">
-            <h2 className="text-3xl font-bold mb-6 text-center text-fuchsia-700">Create New User</h2>
+            <h2 className="text-2xl font-bold mb-4 text-center text-fuchsia-700">
+              Create New User
+            </h2>
 
             <input
               placeholder="Name"
@@ -275,7 +278,7 @@ export default function Dashboard() {
               }
               className="border p-2 w-full mb-3 rounded"
             />
-               
+
             <select
               value={newUser.role}
               onChange={(e) =>
@@ -290,14 +293,14 @@ export default function Dashboard() {
 
             <button
               onClick={handleRegister}
-              className="bg-gradient-to-r from-purple-500 to-blue-500 text-white p-2 rounded mt-2 text-white px-4 py-2 rounded w-full mb-2"
+              className="bg-gradient-to-r from-purple-500 to-blue-500 text-white px-4 py-2 rounded w-full mb-2"
             >
               Register
             </button>
 
             <button
               onClick={() => setShowRegister(false)}
-              className="bg-gradient-to-r from-purple-500 to-blue-500 text-white p-2 rounded mt-2 text-white px-4 py-2 rounded w-full mb-2"
+              className="bg-gray-500 text-white px-4 py-2 rounded w-full"
             >
               Close
             </button>

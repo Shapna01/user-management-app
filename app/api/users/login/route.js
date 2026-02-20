@@ -4,12 +4,13 @@ import bcrypt from "bcryptjs";
 
 export async function POST(request) {
   try {
-    const { email, password, role } = await request.json();
+    const { email, password } = await request.json();
 
     const result = await pool.query(
-      "SELECT * FROM users WHERE email = $1 AND role = $2",
-      [email, role]
+      "SELECT * FROM users WHERE email = $1",
+      [email]
     );
+
     const user = result.rows[0];
 
     if (!user) {
@@ -17,12 +18,18 @@ export async function POST(request) {
     }
 
     const valid = await bcrypt.compare(password, user.password);
+
     if (!valid) {
       return NextResponse.json({ error: "Invalid password" }, { status: 400 });
     }
 
     return NextResponse.json({
-      user: { id: user.id, name: user.name, email: user.email, role: user.role },
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+      },
     });
 
   } catch (err) {
@@ -30,4 +37,3 @@ export async function POST(request) {
     return NextResponse.json({ error: "Server error" }, { status: 500 });
   }
 }
-
